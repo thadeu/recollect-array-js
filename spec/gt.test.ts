@@ -1,0 +1,48 @@
+import RecollectArray from '@/recollect-array'
+
+describe('Filter', () => {
+  describe('#apply', () => {
+    describe('#gt', () => {
+      it('event_time OK', () => {
+        const conditions = {
+          event_time_gt: 2,
+        }
+
+        const data = [
+          {
+            event_type: 'finish_call',
+            event_time: '3',
+            direction: 'inbound',
+            call_status: 'abandoned',
+            user_id: '513',
+            option_selected: '1',
+          },
+        ]
+
+        const filtered = RecollectArray.apply({ conditions, data })
+        expect(filtered.length).toBe(1)
+      })
+
+      it('event_time NOK', () => {
+        const conditions = {
+          event_time_gt: 2,
+        }
+
+        const data = [
+          {
+            event_type: 'finish_call',
+            event_time: 2,
+            direction: 'inbound',
+            call_status: 'abandoned',
+            user_id: '513',
+            option_selected: '1',
+          },
+        ]
+
+        
+        const filtered = RecollectArray.apply({ data, conditions })
+        expect(filtered.length).toBe(0)
+      })
+    })
+  })
+})
