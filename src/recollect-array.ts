@@ -1,23 +1,24 @@
-import chunk from 'lodash.chunk'
-import filter from 'lodash.filter'
-import last from 'lodash.last'
-
-import Predicate from '@/predicates'
+import { applyRuleObject, applyRuleValuable, isPlainObject, chunkArray } from '@/utils'
 
 export class RecollectArray {
-  static apply({ conditions, data }) {
-    let clone = Array.from(data)
+  static recollect = (data: any[], conditions: object): any[] => {
     let entries = Object.entries(conditions).flatMap((a) => a)
-    let rules = chunk(entries, 2)
+    let rules = chunkArray(entries, 2)
 
-    for (let rule of rules) {
-      let [field, _value]: any = rule
-      let fieldable = field.split('_')
-      let predicate = last(fieldable)
-      let attr = field.replace(`_${predicate}`, '')
-      
-      clone = filter(clone, Predicate.use(predicate, attr, conditions[field]))
+    for (let [ruleField, ruleValue] of rules) {
+      if (isPlainObject(ruleValue)) {
+        data = applyRuleObject(data, ruleField, ruleValue)
+      } else {
+        data = applyRuleValuable(data, ruleField, conditions[ruleField as string])
+      }
     }
+
+    return data
+  }
+
+  static filter(data: any[], conditions: object): any[] {
+    let clone = Array.from(data)
+    clone = this.recollect(clone, conditions)
 
     return clone
   }

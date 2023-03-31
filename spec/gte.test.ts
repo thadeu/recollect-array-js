@@ -1,4 +1,4 @@
-import RecollectArray from '@/recollect-array'
+import RecollectArray from '@/index'
 
 describe('Filter', () => {
   describe('#apply', () => {
@@ -19,7 +19,7 @@ describe('Filter', () => {
           },
         ]
 
-        const filtered = RecollectArray.apply({ conditions, data })
+        const filtered = RecollectArray.filter(data, conditions)
         expect(filtered.length).toBe(1)
       })
 
@@ -39,8 +39,7 @@ describe('Filter', () => {
           },
         ]
 
-        
-        const filtered = RecollectArray.apply({ data, conditions })
+        const filtered = RecollectArray.filter(data, conditions)
         expect(filtered.length).toBe(0)
       })
     })

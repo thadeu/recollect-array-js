@@ -1,9 +1,9 @@
-import RecollectArray from '@/recollect-array'
+import RecollectArray from '@/index'
 
 describe('Filter', () => {
   describe('#apply', () => {
     describe('matches', () => {
-      it('option_selected', () => {
+      it('multiples option_selected #1', () => {
         const conditions = {
           option_selected_matches: ['1', '2'],
         }
@@ -19,7 +19,7 @@ describe('Filter', () => {
           },
         ]
 
-        const filtered = RecollectArray.apply({ conditions, data })
+        const filtered = RecollectArray.filter(data, conditions)
         expect(filtered.length).toBe(1)
       })
 
@@ -48,19 +48,16 @@ describe('Filter', () => {
           },
         ]
 
-        const filtered = RecollectArray.apply({ conditions, data })
+        const filtered = RecollectArray.filter(data, conditions)
         expect(filtered.length).toBe(1)
       })
 
-      it('option_selected', () => {
+      it('option_selected #2', () => {
         const conditions = {
           id: '-6OvxlSKISofXqiBDzeDr',
           name: 'Filtro 3',
           direction_eq: 'inbound',
-          dnis_eq: '',
-          user_id_matches: [],
           option_selected_matches: ['400'],
-          dialer_id_matches: [],
         }
 
         const data = [
@@ -82,7 +79,7 @@ describe('Filter', () => {
           },
         ]
 
-        const filtered = RecollectArray.apply({ conditions, data })
+        const filtered = RecollectArray.filter(data, conditions)
         expect(filtered.length).toBe(1)
       })
     })

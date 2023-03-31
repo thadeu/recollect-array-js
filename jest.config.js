@@ -1,5 +1,5 @@
 module.exports = {
-  bail: true,
+  bail: false,
   forceExit: true,
   clearMocks: true,
   collectCoverage: false,

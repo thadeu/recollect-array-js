@@ -1,1 +1,4 @@
-export { default as RecollectArray } from './recollect-array'
+import RecollectArray from '@/recollect-array'
+
+export { RecollectArray }
+export default RecollectArray

@@ -1,8 +1,77 @@
-import RecollectArray from '@/recollect-array'
+import RecollectArray from '@/index'
 
 describe('Filter', () => {
   describe('#apply', () => {
     describe('#cont', () => {
+      describe('ValueObject Pattern', () => {
+        it('dnis_cont start without chunks', async () => {
+          const conditions = {
+            dnis: { cont: '5508008870910*' },
+          }
+
+          const data = Array(10_000)
+            .fill(0)
+            .map((v, i) => {
+              return {
+                event_type: 'finish_call',
+                event_time: '3',
+                direction: 'inbound',
+                call_status: 'abandoned',
+                user_id: '513',
+                option_selected: '1',
+                dnis: `550800887091${i}`,
+              }
+            })
+
+          const filtered = RecollectArray.filter(data, conditions)
+          expect(filtered.length).toBe(1)
+        })
+
+        it('dnis_cont start', () => {
+          const conditions = {
+            dnis: { cont: '550800*' },
+          }
+
+          const data = [
+            {
+              event_type: 'finish_call',
+              event_time: '3',
+              direction: 'inbound',
+              call_status: 'abandoned',
+              user_id: '513',
+              option_selected: '1',
+              dnis: '5508008870918',
+            },
+          ]
+
+          const filtered = RecollectArray.filter(data, conditions)
+          expect(filtered.length).toBe(1)
+        })
+      })
+
+      describe('ValueFunction Pattern', () => {
+        it('dnis_cont start', () => {
+          const conditions = {
+            dnis: { cont: () => '550800*' },
+          }
+
+          const data = [
+            {
+              event_type: 'finish_call',
+              event_time: '3',
+              direction: 'inbound',
+              call_status: 'abandoned',
+              user_id: '513',
+              option_selected: '1',
+              dnis: '5508008870918',
+            },
+          ]
+
+          const filtered = RecollectArray.filter(data, conditions)
+          expect(filtered.length).toBe(1)
+        })
+      })
+
       it('dnis_cont start', () => {
         const conditions = {
           event_time_gte: '3',
@@ -23,7 +92,7 @@ describe('Filter', () => {
           },
         ]
 
-        const filtered = RecollectArray.apply({ conditions, data })
+        const filtered = RecollectArray.filter(data, conditions)
         expect(filtered.length).toBe(1)
       })
 
@@ -47,7 +116,7 @@ describe('Filter', () => {
           },
         ]
 
-        const filtered = RecollectArray.apply({ conditions, data })
+        const filtered = RecollectArray.filter(data, conditions)
         expect(filtered.length).toBe(1)
       })
 
@@ -71,7 +140,7 @@ describe('Filter', () => {
           },
         ]
 
-        const filtered = RecollectArray.apply({ conditions, data })
+        const filtered = RecollectArray.filter(data, conditions)
         expect(filtered.length).toBe(1)
       })
 
@@ -95,7 +164,7 @@ describe('Filter', () => {
           },
         ]
 
-        const filtered = RecollectArray.apply({ conditions, data })
+        const filtered = RecollectArray.filter(data, conditions)
         expect(filtered.length).toBe(0)
       })
     })
