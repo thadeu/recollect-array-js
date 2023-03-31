@@ -1,8 +1,6 @@
 import isFunction from 'lodash.isfunction'
 import get from 'lodash.get'
 
-const isNullOrUndefined = (value) => [undefined, null].includes(value)
-
 const equals = (data, field, value) => get(data, field) == value
 
 const contains = (data, field, value) => {
