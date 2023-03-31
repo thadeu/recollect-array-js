@@ -19,7 +19,6 @@ jobs:
 
   jest:
     name: jest
-    run-name: ${{ github.ref_name }} by @${{ github.actor }}
     needs: [approved]
     runs-on: ubuntu-latest
 
