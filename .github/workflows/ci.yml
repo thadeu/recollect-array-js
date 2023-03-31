@@ -18,7 +18,7 @@ jobs:
           echo "Allow to run spec!"
 
   jest:
-    name: jest
+    name: node
     needs: [approved]
     runs-on: ubuntu-latest
 
