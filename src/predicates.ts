@@ -22,7 +22,24 @@ const contains = (data, field, value) => {
 }
 
 export class Predicate {
-  static PREDICATES = ['eq', 'not_eq', 'gte', 'lte', 'gt', 'lt', 'matches', 'not_matches', 'in', 'not_in', 'cont', 'not_cont']
+  static PREDICATES = [
+    'eq',
+    'not_eq',
+    'gte',
+    'lte',
+    'gt',
+    'lt',
+    'matches',
+    'not_matches',
+    'in',
+    'not_in',
+    'cont',
+    'not_cont',
+    'starts_with',
+    'not_starts_with',
+    'st',
+    'not_st'
+  ]
 
   static factory(predicate, field, value) {
     if (!this.PREDICATES.includes(predicate)) return undefined
@@ -109,6 +126,24 @@ export class Predicate {
   static not_cont(field, value) {
     return function (data) {
       return !contains(data, field, value)
+    }
+  }
+
+  static starts_with(field, value) {
+    return function(data) {
+      return contains(data, field, `${value}*`)
+    }
+  }
+
+  static st(field, value) {
+    return function(data) {
+      return this.starts_with(data, field, value)
+    }
+  }
+
+  static not_st(field, value) {
+    return function(data) {
+      return !this.starts_with(data, field, value)
     }
   }
 }
