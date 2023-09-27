@@ -15,6 +15,6 @@ export declare class Predicate {
     static not_cont(field: any, value: any): (data: any) => boolean;
     static starts_with(field: any, value: any): (data: any) => any;
     static st(field: any, value: any): (data: any) => any;
-    static not_st(field: any, value: any): (data: any) => boolean;
+    static not_st(field: any, value: any): boolean;
 }
 export default Predicate;
