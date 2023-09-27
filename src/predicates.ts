@@ -136,15 +136,11 @@ export class Predicate {
   }
 
   static st(field, value) {
-    return function(data) {
-      return this.starts_with(data, field, value)
-    }
+    return this.starts_with(field, value)
   }
 
   static not_st(field, value) {
-    return function(data) {
-      return !this.starts_with(data, field, value)
-    }
+    return !this.starts_with(field, value)
   }
 }
 

@@ -29,7 +29,7 @@ describe('Filter', () => {
 
         it('dnis_cont start', () => {
           const conditions = {
-            dnis: { starts_with: '550800*' },
+            dnis: { starts_with: '550800' },
           }
 
           const data = [
@@ -52,7 +52,7 @@ describe('Filter', () => {
       describe('ValueFunction Pattern', () => {
         it('dnis_cont start', () => {
           const conditions = {
-            dnis: { starts_with: () => '550800*' },
+            dnis: { starts_with: () => '550800' },
           }
 
           const data = [
@@ -77,7 +77,7 @@ describe('Filter', () => {
           event_time_gte: '3',
           user_id_eq: '513',
           option_selected_eq: '1',
-          dnis_starts_with: '550800*',
+          dnis_starts_with: '550800',
         }
 
         const data = [
@@ -94,6 +94,54 @@ describe('Filter', () => {
 
         const filtered = RecollectArray.filter(data, conditions)
         expect(filtered.length).toBe(1)
+      })
+
+      it('dnis_cont start', () => {
+        const conditions = {
+          event_time_gte: '3',
+          user_id_eq: '513',
+          option_selected_eq: '1',
+          dnis_st: '550800',
+        }
+
+        const data = [
+          {
+            event_type: 'finish_call',
+            event_time: '3',
+            direction: 'inbound',
+            call_status: 'abandoned',
+            user_id: '513',
+            option_selected: '1',
+            dnis: '5508008870918',
+          },
+        ]
+
+        const filtered = RecollectArray.filter(data, conditions)
+        expect(filtered.length).toBe(1)
+      })
+
+      it('dnis_cont start', () => {
+        const conditions = {
+          event_time_gte: '3',
+          user_id_eq: '513',
+          option_selected_eq: '1',
+          dnis: { not_st: '550800' },
+        }
+
+        const data = [
+          {
+            event_type: 'finish_call',
+            event_time: '3',
+            direction: 'inbound',
+            call_status: 'abandoned',
+            user_id: '513',
+            option_selected: '1',
+            dnis: '5508008870918',
+          },
+        ]
+
+        const filtered = RecollectArray.filter(data, conditions)
+        expect(filtered.length).toBe(0)
       })
     })
   })
