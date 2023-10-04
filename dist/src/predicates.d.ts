@@ -3,8 +3,9 @@ export declare class Predicate {
     static factory(predicate: any, field: any, value: any): any;
     static matches(field: any, value: any): (data: any) => any;
     static not_matches(field: any, value: any): boolean;
+    static exists(field: any, value: any): (data: any) => any;
     static in(field: any, value: any): (data: any) => any;
-    static not_in(field: any, value: any): boolean;
+    static not_in(field: any, value: any): (data: any) => boolean;
     static eq(field: any, value: any): (data: any) => boolean;
     static not_eq(field: any, value: any): (data: any) => boolean;
     static gte(field: any, value: any): (data: any) => boolean;
