@@ -38,7 +38,8 @@ export class Predicate {
     'starts_with',
     'not_starts_with',
     'st',
-    'not_st'
+    'not_st',
+    'exists'
   ]
 
   static factory(predicate, field, value) {
@@ -65,12 +66,27 @@ export class Predicate {
     return !this.matches(field, value)
   }
 
+  static exists(field, value) {
+    return (data) => {
+      if (String(value) == 'true') {
+        return this.not_in(field, ['', null, undefined])(data)
+      } else {
+        return this.in(field, ['', null, undefined])(data)
+      }
+
+    }
+  }
+
   static in(field, value) {
-    return this.matches(field, value)
+    return (data) => {
+      return this.matches(field, value)(data)
+    }
   }
 
   static not_in(field, value) {
-    return !this.in(field, value)
+    return (data) => {
+      return !this.matches(field, value)(data)
+    }
   }
 
   static eq(field, value) {

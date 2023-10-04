@@ -71,6 +71,7 @@ Without configuration, because we use only JavaScript. ❤️
 | LessThanEqual | lte        | Anywhere |
 | GreaterThan | gt        | Anywhere |
 | GreaterThanEqual | gte        | Anywhere |
+| GreaterThanEqual | gte        | Anywhere |
 
 ## Availables Predicates only when value is Object
 
@@ -78,6 +79,7 @@ Without configuration, because we use only JavaScript. ❤️
 
 | Type | Suffix | Value | 
 | ----------- | ----------- | ----------- |
+| Exists | exists        | Anywhere |
 | NotEqual | not_eq        | Object |
 | NotContains | not_cont        | Object |
 | NotIncluded | not_in        | Object |
@@ -116,7 +118,8 @@ Without configuration, because we use only JavaScript. ❤️
       schedule: { all_day: false },
       numbers: [5, 6],
       active: false,
-      count: 99
+      count: 99,
+      members: null
     }
   ]
   ```
@@ -142,6 +145,32 @@ collection = RecollectArray.filter(data, filters)
 filters = {
   active: {
     not_eq: true
+  }
+}
+
+collection = RecollectArray.filter(data, filters)
+```
+
+**Exists**
+
+Filter only if value be different of null or undefined
+
+```ts
+filters = {
+  members: {
+    exists: true
+  }
+}
+
+collection = RecollectArray.filter(data, filters)
+```
+
+**NotExists**
+
+```ts
+filters = {
+  members: {
+    exists: false
   }
 }
 
