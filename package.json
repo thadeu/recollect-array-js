@@ -8,10 +8,6 @@
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "unpkg": "dist/index.umd.js",
-  "engines": {
-    "node": ">= v14",
-    "vscode": "^1.22.0"
-  },
   "repository": {
     "url": "https://github.com/thadeu/recollect-array-js"
   },
