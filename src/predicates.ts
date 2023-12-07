@@ -39,7 +39,10 @@ export class Predicate {
     'not_starts_with',
     'st',
     'not_st',
-    'exists'
+    'exists',
+    'not_exists',
+    'ex',
+    'not_ex'
   ]
 
   static factory(predicate, field, value) {
@@ -73,7 +76,24 @@ export class Predicate {
       } else {
         return this.in(field, ['', null, undefined])(data)
       }
+    }
+  }
 
+  static not_exists(field, value) {
+    return (data) => {
+      return this.exists(field, false)(data)
+    }
+  }
+
+  static ex(field, value) {
+    return (data) => {
+      return this.exists(field, true)(data)
+    }
+  }
+
+  static not_ex(field, value) {
+    return (data) => {
+      return this.exists(field, false)(data)
     }
   }
 

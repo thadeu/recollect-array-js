@@ -4,6 +4,9 @@ export declare class Predicate {
     static matches(field: any, value: any): (data: any) => any;
     static not_matches(field: any, value: any): boolean;
     static exists(field: any, value: any): (data: any) => any;
+    static not_exists(field: any, value: any): (data: any) => any;
+    static ex(field: any, value: any): (data: any) => any;
+    static not_ex(field: any, value: any): (data: any) => any;
     static in(field: any, value: any): (data: any) => any;
     static not_in(field: any, value: any): (data: any) => boolean;
     static eq(field: any, value: any): (data: any) => boolean;
