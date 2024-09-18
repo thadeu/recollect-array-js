@@ -141,9 +141,9 @@ describe('Filter', () => {
         expect(filtered.length).toBe(1)
       })
 
-      it('dnis_cont not_st', () => {
+      it('dnis not_st', () => {
         const conditions = {
-          option_selected: { not_st: '3' },
+          ctw_cc_0_nok: { not_st: 0 },
         }
 
         const data = [
@@ -153,7 +153,7 @@ describe('Filter', () => {
             direction: 'inbound',
             call_status: 'abandoned',
             user_id: '513',
-            option_selected: '1',
+            ctw_cc_0_nok: 1,
             dnis: '5508008870918',
           },
         ]

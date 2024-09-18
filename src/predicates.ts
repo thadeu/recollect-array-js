@@ -11,11 +11,11 @@ const contains = (data, field, value) => {
   let includeRegex = /^\*\w*\*$/
 
   if (value.match(startRegex)) {
-    return target.startsWith(value.replace(/\*$/, ''))
+    return String(target).startsWith(value.replace(/\*$/, ''))
   } else if (value.match(endRegex)) {
-    return target.endsWith(value.replace(/^\*/, ''))
+    return String(target).endsWith(value.replace(/^\*/, ''))
   } else if (value.match(includeRegex)) {
-    return target.includes(value.replace(/^\*/, '').replace(/\*$/, ''))
+    return String(target).includes(value.replace(/^\*/, '').replace(/\*$/, ''))
   } else {
     return false
   }
@@ -178,11 +178,15 @@ export class Predicate {
   }
 
   static st(field, value) {
-    return this.starts_with(field, value)
+    return function(data) {
+      return contains(data, field, `${value}*`)
+    }
   }
 
   static not_st(field, value) {
-    return this.not_starts_with(field, value)
+    return function(data) {
+      return !contains(data, field, `${value}*`)
+    }
   }
 }
 

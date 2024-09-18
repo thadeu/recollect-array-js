@@ -15,10 +15,11 @@ export declare class Predicate {
     static gt(field: any, value: any): (data: any) => boolean;
     static lte(field: any, value: any): (data: any) => boolean;
     static lt(field: any, value: any): (data: any) => boolean;
-    static cont(field: any, value: any): (data: any) => any;
+    static cont(field: any, value: any): (data: any) => boolean;
     static not_cont(field: any, value: any): (data: any) => boolean;
-    static starts_with(field: any, value: any): (data: any) => any;
-    static st(field: any, value: any): (data: any) => any;
-    static not_st(field: any, value: any): boolean;
+    static starts_with(field: any, value: any): (data: any) => boolean;
+    static not_starts_with(field: any, value: any): (data: any) => boolean;
+    static st(field: any, value: any): (data: any) => boolean;
+    static not_st(field: any, value: any): (data: any) => boolean;
 }
 export default Predicate;
