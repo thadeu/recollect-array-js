@@ -171,12 +171,18 @@ export class Predicate {
     }
   }
 
+  static not_starts_with(field, value) {
+    return function(data) {
+      return !contains(data, field, `${value}*`)
+    }
+  }
+
   static st(field, value) {
     return this.starts_with(field, value)
   }
 
   static not_st(field, value) {
-    return !this.starts_with(field, value)
+    return this.not_starts_with(field, value)
   }
 }
 

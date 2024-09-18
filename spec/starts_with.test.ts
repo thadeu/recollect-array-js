@@ -120,12 +120,9 @@ describe('Filter', () => {
         expect(filtered.length).toBe(1)
       })
 
-      it('dnis_cont start', () => {
+      it('dnis_cont not_starts_with', () => {
         const conditions = {
-          event_time_gte: '3',
-          user_id_eq: '513',
-          option_selected_eq: '1',
-          dnis: { not_st: '550800' },
+          option_selected: { not_starts_with: '3' },
         }
 
         const data = [
@@ -141,7 +138,28 @@ describe('Filter', () => {
         ]
 
         const filtered = RecollectArray.filter(data, conditions)
-        expect(filtered.length).toBe(0)
+        expect(filtered.length).toBe(1)
+      })
+
+      it('dnis_cont not_st', () => {
+        const conditions = {
+          option_selected: { not_st: '3' },
+        }
+
+        const data = [
+          {
+            event_type: 'finish_call',
+            event_time: '3',
+            direction: 'inbound',
+            call_status: 'abandoned',
+            user_id: '513',
+            option_selected: '1',
+            dnis: '5508008870918',
+          },
+        ]
+
+        const filtered = RecollectArray.filter(data, conditions)
+        expect(filtered.length).toBe(1)
       })
     })
   })
