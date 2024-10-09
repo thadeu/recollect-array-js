@@ -123,7 +123,7 @@ export class Predicate {
 
   static gte(field, value) {
     return function (data) {
-      const target = get(data, field)
+      const target = Number(get(data, field))
 
       return target >= value
     }
@@ -131,7 +131,7 @@ export class Predicate {
 
   static gt(field, value) {
     return function (data) {
-      const target = get(data, field)
+      const target = Number(get(data, field))
 
       return target > value
     }
@@ -139,7 +139,7 @@ export class Predicate {
 
   static lte(field, value) {
     return function (data) {
-      const target = get(data, field)
+      const target = Number(get(data, field))
 
       return target <= value
     }
@@ -147,7 +147,7 @@ export class Predicate {
 
   static lt(field, value) {
     return function (data) {
-      const target = get(data, field)
+      const target = Number(get(data, field))
 
       return target < value
     }

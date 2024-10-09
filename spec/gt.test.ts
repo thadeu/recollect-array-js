@@ -5,13 +5,29 @@ describe('Filter', () => {
     describe('#gt', () => {
       it('event_time OK', () => {
         const conditions = {
-          event_time_gt: 2,
+          'calls.1.duration': { gt: '1000' },
         }
 
         const data = [
           {
             event_type: 'finish_call',
             event_time: '3',
+            calls: [
+              { duration: '3' },
+              { duration: '4' },
+            ],
+            direction: 'inbound',
+            call_status: 'abandoned',
+            user_id: '513',
+            option_selected: '1',
+          },
+          {
+            event_type: 'finish_call',
+            event_time: '3',
+            calls: [
+              { duration: '10' },
+              { duration: 1001 },
+            ],
             direction: 'inbound',
             call_status: 'abandoned',
             user_id: '513',
@@ -25,13 +41,16 @@ describe('Filter', () => {
 
       it('event_time NOK', () => {
         const conditions = {
-          event_time_gt: 2,
+          'calls.0.duration': { gt: 2 },
         }
 
         const data = [
           {
             event_type: 'finish_call',
-            event_time: 2,
+            event_time: '2',
+            calls: [
+              { duration: 1 },
+            ],
             direction: 'inbound',
             call_status: 'abandoned',
             user_id: '513',
