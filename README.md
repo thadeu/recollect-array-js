@@ -35,6 +35,16 @@ unreleased | https://github.com/thadeu/recollect-array-js/blob/main/README.md
 
 ## Installation
 
+Please prefer install directly from Github using tags or branch main
+
+```bash
+yarn add github:thadeu/recollect-array-js#main
+
+# or 
+
+yarn add github:thadeu/recollect-array-js#v1.0.8
+```
+
 Use Yarn
 
 ```bash
