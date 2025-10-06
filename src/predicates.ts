@@ -1,6 +1,5 @@
 import isFunction from 'lodash.isfunction'
 import get from 'lodash.get'
-import isEmpty from 'lodash.isempty'
 
 const equals = (data, field, value) => get(data, field) == value
 
