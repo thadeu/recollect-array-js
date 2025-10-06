@@ -24,16 +24,16 @@ jobs:
 
     strategy:
       matrix:
-        node-version: ['14', '16', '18']
+        node-version: ['18', '20', '22']
 
     defaults:
       run:
         working-directory: ./
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
