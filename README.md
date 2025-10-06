@@ -72,6 +72,9 @@ Without configuration, because we use only JavaScript. ❤️
 | GreaterThan | gt        | Anywhere |
 | GreaterThanEqual | gte        | Anywhere |
 | GreaterThanEqual | gte        | Anywhere |
+| Empty | empty        | Anywhere |
+| Regex | reg or regex        | Anywhere |
+| NotRegex | not_reg or not_regex        | Anywhere |
 
 ## Availables Predicates only when value is Object
 
@@ -128,6 +131,30 @@ Without configuration, because we use only JavaScript. ❤️
 You can use one or multiples predicates in your filter. We see some use cases.
 
 ### Flexible Use Case (Hash)
+
+**Regex**
+
+We going to test value with the Regex was passed to predicate, for example.
+
+```ts
+filters = {
+  email: { regex: '.*@email3.com$' }
+}
+
+collection = RecollectArray.filter(data, filters)
+```
+
+**Empty**
+
+We going to check if value is has some items `[null, undefined, NaN, '', ' ']`
+
+```ts
+filters = {
+  members: { empty: true }
+}
+
+collection = RecollectArray.filter(data, filters)
+```
 
 **Equal**
 

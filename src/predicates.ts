@@ -1,5 +1,6 @@
 import isFunction from 'lodash.isfunction'
 import get from 'lodash.get'
+import isEmpty from 'lodash.isempty'
 
 const equals = (data, field, value) => get(data, field) == value
 
@@ -42,7 +43,13 @@ export class Predicate {
     'exists',
     'not_exists',
     'ex',
-    'not_ex'
+    'not_ex',
+    'len',
+    'regex',
+    'not_regex',
+    'reg',
+    'not_reg',
+    'empty'
   ]
 
   static factory(predicate, field, value) {
@@ -54,6 +61,47 @@ export class Predicate {
     }
 
     return this[predicate](field, value)
+  }
+
+  static empty(field, value) {
+    return function (data) {
+      let target = get(data, field)
+      let flags = [null, undefined, NaN, '', ' ']
+
+      if (value) {
+        return flags.includes(target)
+      }
+
+      return !flags.includes(target)
+    }
+  }
+
+  static len(field, value) {
+    return function (data) {
+      let target = get(data, field)
+      return value > String(target).length
+    }
+  }
+
+  static regex(field, value) {
+    return function(data) {
+      let target = get(data, field)
+      let reg = new RegExp(value, 'g')
+
+      return reg.test(target)
+    }
+  }
+
+  static reg(field, value) {
+    return this.regex(field, value)
+  }
+
+  static not_reg(field, value) {
+    return !this.regex(field, value)
+  }
+
+  static not_regex(field, value) {
+    return !this.regex(field, value)
   }
 
   static matches(field, value) {
