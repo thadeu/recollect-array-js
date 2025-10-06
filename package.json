@@ -1,7 +1,7 @@
 {
   "name": "recollect-array-js",
   "description": "A simple and lightweight way to filter array using JavaScript",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "author": "Thadeu Esteves<tadeuu@gmail.com>",
   "license": "MIT",
   "source": "src/index.ts",
