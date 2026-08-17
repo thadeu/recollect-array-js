@@ -9,7 +9,8 @@
   "module": "dist/index.mjs",
   "unpkg": "dist/index.umd.js",
   "repository": {
-    "url": "https://github.com/thadeu/recollect-array-js"
+    "type": "git",
+    "url": "git+https://github.com/thadeu/recollect-array-js.git"
   },
   "files": [
     "dist"

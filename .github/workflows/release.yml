@@ -1,0 +1,77 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  jest:
+    name: node ${{ matrix.node-version }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: ['18', '20', '22']
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node-version }}
+          package-manager-cache: false
+
+      - name: Install Yarn Dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Yarn Jest
+        run: yarn test
+
+  publish:
+    name: npm
+    needs: [jest]
+    runs-on: ubuntu-latest
+
+    # id-token is what mints the OIDC token npm exchanges for a short-lived
+    # publish credential. No NPM_TOKEN secret is involved.
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+
+      # Trusted publishing needs npm >= 11.5.1
+      - name: Upgrade npm
+        run: npm install -g npm@latest
+
+      - name: Install Yarn Dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Check tag matches package.json
+        if: github.event_name == 'push'
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          version="$(node -p "require('./package.json').version")"
+
+          if [ "$tag" != "$version" ]; then
+            echo "::error::tag v$tag does not match package.json version $version"
+            exit 1
+          fi
+
+      - name: Build
+        run: yarn build
+
+      - name: Publish
+        run: npm publish
