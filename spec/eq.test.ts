@@ -162,6 +162,58 @@ describe('Filter', () => {
         expect(filtered.length).toBe(1)
       })
 
+      describe('path resolution parity with lodash', () => {
+        it('reads a key that literally contains a dot', () => {
+          const data = [
+            { id: 1, 'user.id': '513' },
+            { id: 2, 'user.id': '30' },
+          ]
+
+          const filtered = RecollectArray.filter(data, { 'user.id': { eq: '513' } })
+          expect(filtered.map((o) => o.id)).toEqual([1])
+        })
+
+        it('prefers the literal dotted key over the nested one', () => {
+          const data = [{ id: 1, user: { id: 'nested' }, 'user.id': 'literal' }]
+
+          const filtered = RecollectArray.filter(data, { 'user.id': { eq: 'literal' } })
+          expect(filtered.map((o) => o.id)).toEqual([1])
+        })
+
+        it('reads bracket notation', () => {
+          const data = [
+            { id: 1, ps: [{ digits: '5' }] },
+            { id: 2, ps: [{ digits: '9' }] },
+          ]
+
+          const filtered = RecollectArray.filter(data, { 'ps[0].digits': { eq: '5' } })
+          expect(filtered.map((o) => o.id)).toEqual([1])
+        })
+
+        it('does not treat a null in the middle of the path as a match', () => {
+          const data = [
+            { id: 1, user: { id: '513' } },
+            { id: 2, user: null },
+            { id: 3 },
+          ]
+
+          const filtered = RecollectArray.filter(data, { 'user.id': { not_eq: '513' } })
+          expect(filtered.map((o) => o.id)).toEqual([2, 3])
+        })
+
+        it('keeps falsy leaf values distinguishable from a missing path', () => {
+          const data = [
+            { id: 1, a: { b: 0 } },
+            { id: 2, a: { b: '' } },
+            { id: 3, a: { b: false } },
+            { id: 4, a: {} },
+          ]
+
+          expect(RecollectArray.filter(data, { 'a.b': { eq: 0 } }).map((o) => o.id)).toEqual([1, 2, 3])
+          expect(RecollectArray.filter(data, { 'a.b': { exists: true } }).map((o) => o.id)).toEqual([1, 3])
+        })
+      })
+
       describe('when field is an array of objects', () => {
         const data = [
           {
