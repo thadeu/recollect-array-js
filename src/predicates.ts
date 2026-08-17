@@ -1,11 +1,14 @@
 import isFunction from 'lodash.isfunction'
-import get from 'lodash.get'
 
-const equals = (data, field, value) => get(data, field) == value
+import { resolve, somewhere } from '@/resolver'
 
-const contains = (data, field, value) => {
-  const target = get(data, field)
+const BLANK = ['', null, undefined]
 
+const EMPTY = [null, undefined, NaN, '', ' ']
+
+const equals = (data, field, value) => somewhere(data, field, (target) => target == value)
+
+const matching = (target, value) => {
   let startRegex = /^([^*])(\w*)([*])$/
   let endRegex = /^([*])(\w*)([^*])$/
   let includeRegex = /^\*\w*\*$/
@@ -20,6 +23,8 @@ const contains = (data, field, value) => {
     return false
   }
 }
+
+const contains = (data, field, value) => somewhere(data, field, (target) => matching(target, value))
 
 export class Predicate {
   static PREDICATES = [
@@ -64,30 +69,27 @@ export class Predicate {
 
   static empty(field, value) {
     return function (data) {
-      let target = get(data, field)
-      let flags = [null, undefined, NaN, '', ' ']
+      let { fanned, values } = resolve(data, field)
+      let blank = (target) => EMPTY.includes(target)
+      let result = fanned ? values.length === 0 || values.some(blank) : blank(values[0])
 
       if (value) {
-        return flags.includes(target)
+        return result
       }
 
-      return !flags.includes(target)
+      return !result
     }
   }
 
   static len(field, value) {
     return function (data) {
-      let target = get(data, field)
-      return value > String(target).length
+      return somewhere(data, field, (target) => value > String(target).length)
     }
   }
 
   static regex(field, value) {
-    return function(data) {
-      let target = get(data, field)
-      let reg = new RegExp(value, 'g')
-
-      return reg.test(target)
+    return function (data) {
+      return somewhere(data, field, (target) => new RegExp(value, 'g').test(target))
     }
   }
 
@@ -96,33 +98,47 @@ export class Predicate {
   }
 
   static not_reg(field, value) {
-    return !this.regex(field, value)
+    return this.not_regex(field, value)
   }
 
   static not_regex(field, value) {
-    return !this.regex(field, value)
+    return (data) => {
+      return !this.regex(field, value)(data)
+    }
   }
 
   static matches(field, value) {
     return function (data) {
-      let target = [get(data, field)].flatMap((o) => o)
-      value = [value].flatMap((o) => o)
+      let { fanned, values } = resolve(data, field)
+      let target = (fanned ? values : [values[0]]).flatMap((o) => o)
+      let expected = [value].flatMap((o) => o)
 
-      return value.some((o: any) => target.includes(o))
+      return expected.some((o: any) => target.includes(o))
     }
   }
 
   static not_matches(field, value) {
-    return !this.matches(field, value)
+    return (data) => {
+      return !this.matches(field, value)(data)
+    }
   }
 
   static exists(field, value) {
     return (data) => {
-      if (String(value) == 'true') {
-        return this.not_in(field, ['', null, undefined])(data)
-      } else {
-        return this.in(field, ['', null, undefined])(data)
+      let wanted = String(value) == 'true'
+      let { fanned, values } = resolve(data, field)
+
+      if (fanned) {
+        let present = values.some((target) => !BLANK.includes(target))
+
+        return wanted ? present : !present
       }
+
+      if (wanted) {
+        return this.not_in(field, BLANK)(data)
+      }
+
+      return this.in(field, BLANK)(data)
     }
   }
 
@@ -170,33 +186,25 @@ export class Predicate {
 
   static gte(field, value) {
     return function (data) {
-      const target = Number(get(data, field))
-
-      return target >= value
+      return somewhere(data, field, (target) => Number(target) >= value)
     }
   }
 
   static gt(field, value) {
     return function (data) {
-      const target = Number(get(data, field))
-
-      return target > value
+      return somewhere(data, field, (target) => Number(target) > value)
     }
   }
 
   static lte(field, value) {
     return function (data) {
-      const target = Number(get(data, field))
-
-      return target <= value
+      return somewhere(data, field, (target) => Number(target) <= value)
     }
   }
 
   static lt(field, value) {
     return function (data) {
-      const target = Number(get(data, field))
-
-      return target < value
+      return somewhere(data, field, (target) => Number(target) < value)
     }
   }
 
@@ -213,25 +221,25 @@ export class Predicate {
   }
 
   static starts_with(field, value) {
-    return function(data) {
+    return function (data) {
       return contains(data, field, `${value}*`)
     }
   }
 
   static not_starts_with(field, value) {
-    return function(data) {
+    return function (data) {
       return !contains(data, field, `${value}*`)
     }
   }
 
   static st(field, value) {
-    return function(data) {
+    return function (data) {
       return contains(data, field, `${value}*`)
     }
   }
 
   static not_st(field, value) {
-    return function(data) {
+    return function (data) {
       return !contains(data, field, `${value}*`)
     }
   }

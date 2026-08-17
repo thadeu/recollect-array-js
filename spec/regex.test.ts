@@ -50,6 +50,42 @@ describe('Filter', () => {
           expect(filtered.length).toBe(0)
         })
       })
+
+      describe('not_regex', () => {
+        it('keeps only the items that do not match', () => {
+          const conditions = {
+            dnis: { not_regex: '10$' },
+          }
+
+          const data = [
+            { dnis: '5508008870910' },
+            { dnis: '5508008870918' },
+          ]
+
+          const filtered = RecollectArray.filter(data, conditions)
+          expect(filtered.map((o) => o.dnis)).toEqual(['5508008870918'])
+        })
+
+        it('not_reg walks an array of objects', () => {
+          const conditions = {
+            'post_attendances.digits': { not_reg: '^5$' },
+          }
+
+          const data = [
+            {
+              id: 1,
+              post_attendances: [{ digits: '1' }, { digits: '5' }],
+            },
+            {
+              id: 2,
+              post_attendances: [{ digits: '9' }],
+            },
+          ]
+
+          const filtered = RecollectArray.filter(data, conditions)
+          expect(filtered.map((o) => o.id)).toEqual([2])
+        })
+      })
     })
   })
 })

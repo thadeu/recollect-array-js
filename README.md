@@ -301,6 +301,56 @@ collection = RecollectArray.filter(data, filters)
 # [{ schedules: [{ opened: true, all_day: true }, { opened: false, all_day: true }] }]
 ```
 
+**Array of Objects (without index)**
+
+When a path crosses an array of objects and the next segment is not an index, the predicate is applied to **every** element and the item is kept if **any** of them satisfies it.
+
+```ts
+data = [
+  { id: 1, post_attendances: [{ digits: '1' }, { digits: '5' }] },
+  { id: 2, post_attendances: [{ digits: '5' }] },
+  { id: 3, post_attendances: [{ digits: '9' }] },
+  { id: 4, post_attendances: [] }
+]
+
+filters = {
+  'post_attendances.digits': { eq: '5' }
+}
+
+collection = RecollectArray.filter(data, filters)
+
+# [{ id: 1, ... }, { id: 2, ... }]
+```
+
+You can also be explicit with `*`, which is useful for arrays of scalars.
+
+```ts
+filters = {
+  'post_attendances.*.digits': { eq: '5' },
+  'tags.*': { eq: 'urgent' }
+}
+
+collection = RecollectArray.filter(data, filters)
+```
+
+It works with every predicate, and negative predicates read as *no element satisfies it*.
+
+```ts
+filters = {
+  'post_attendances.digits': { not_eq: '5' } // keeps 3 and 4
+}
+```
+
+Nesting more than one array level also works.
+
+```ts
+filters = {
+  'calls.post_attendances.digits': { eq: '5' }
+}
+```
+
+> 💡 Use `.0` when you want a specific position and no index when you want *any* element.
+
 Amazing, you can pass a Function value as value, like this.
 
 ```javascript

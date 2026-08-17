@@ -83,5 +83,47 @@ describe('Filter', () => {
         expect(filtered.length).toBe(1)
       })
     })
+
+    describe('not_matches', () => {
+      it('keeps only the items outside the list', () => {
+        const conditions = {
+          option_selected: { not_matches: ['400'] },
+        }
+
+        const data = [
+          {
+            user_id: '513',
+            option_selected: '400',
+          },
+          {
+            user_id: '513',
+            option_selected: '0',
+          },
+        ]
+
+        const filtered = RecollectArray.filter(data, conditions)
+        expect(filtered.map((o) => o.option_selected)).toEqual(['0'])
+      })
+
+      it('walks an array of objects', () => {
+        const conditions = {
+          'post_attendances.digits': { not_matches: ['5'] },
+        }
+
+        const data = [
+          {
+            id: 1,
+            post_attendances: [{ digits: '1' }, { digits: '5' }],
+          },
+          {
+            id: 2,
+            post_attendances: [{ digits: '9' }],
+          },
+        ]
+
+        const filtered = RecollectArray.filter(data, conditions)
+        expect(filtered.map((o) => o.id)).toEqual([2])
+      })
+    })
   })
 })
